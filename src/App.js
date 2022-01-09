@@ -1,34 +1,55 @@
 import { useState, useEffect } from "react";
 
 function App() {
-  const [toDo, setToDo] = useState("");
-  const [toDos, setToDos] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [dollar, setDollar] = useState("");
+  const [coin, setCoin] = useState([]);
+  const [convert, setConvert] = useState("");
 
   const onChange = (event) => {
-    setToDo(() => event.target.value);
+    setDollar(event.target.value);
   };
 
-  const onSubmit = (event) => {
-    event.preventDefault();
-    if (toDo !== "") {
-      setToDos((current) => [toDo, ...current]);
-      setToDo("");
-    }
+  const onOptionChange = (event) => {
+    setConvert(event.target.value);
   };
 
+  useEffect(
+    () =>
+      fetch("https://api.coinpaprika.com/v1/tickers")
+        .then((response) => response.json())
+        .then((json) => {
+          setCoin(json);
+          setLoading(false);
+        }),
+    []
+  );
+  console.log(coin[0]);
   return (
     <div>
-      <h1>Your To Do List ({toDos.length})</h1>
-      <form onSubmit={onSubmit}>
-        <input onChange={onChange} value={toDo} type="text" placeholder="Write To Do"></input>
-        <button>Add</button>
-      </form>
-      <hr />
-      <ul>
-        {toDos.map((item, index) => (
-          <li key={index}>{item}</li>
-        ))}
-      </ul>
+      {loading ? (
+        <h1>Loading...</h1>
+      ) : (
+        <div>
+          <h1>Coin Converter</h1>
+          <hr />
+          <input onChange={onChange} value={dollar} type="number" placeholder="0" />
+          <span> $ --> </span>
+          <input
+            value={convert === "" ? "" : dollar * coin[convert].quotes.USD.price}
+            placeholder={convert === "" ? "Select a crypto currency" : coin[convert].name}
+            disabled
+          />
+          <hr />
+          <select onChange={onOptionChange}>
+            {coin.map((info) => (
+              <option key={info.id} value={info.rank - 1}>
+                {info.name}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
     </div>
   );
 }
