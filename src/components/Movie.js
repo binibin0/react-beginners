@@ -6,7 +6,7 @@ function Movie({ id, medium_cover_image, title, genres, summary }) {
     <div>
       <img src={medium_cover_image} />
       <h3>
-        <Link to={"/movie/" + id}>{title}</Link>
+        <Link to={"/movie" + id}>{title}</Link>
       </h3>
       <ul>
         {genres.map((genre) => (

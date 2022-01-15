@@ -1,27 +1,21 @@
+import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { useEffect } from "react";
-import { useState } from "react/cjs/react.development";
 
 function Detail() {
-  const [loading, setLoading] = useState(true);
   const [movies, setMovies] = useState([]);
   const { id } = useParams();
   useEffect(() => {
     fetch(`https://yts.mx/api/v2/movie_details.json?movie_id=${id}`)
       .then((response) => response.json())
-      .then((json) => setMovies(json.data.movie), setLoading(false));
+      .then((json) => setMovies(json.data.movie));
   }, []);
-
+  console.log(movies);
   return (
     <div>
-      {loading ? (
-        <h1>Loading...</h1>
-      ) : (
-        <div>
-          <img src={movies.large_cover_image} />
-          <h4>Likes: {movies.like_count}</h4>
-        </div>
-      )}
+      <img src={movies.large_cover_image} />
+      <h1>{movies.title}</h1>
+      <h3>Likes: {movies.like_count}</h3>
+      <h3>Downloads: {movies.download_count}</h3>
     </div>
   );
 }

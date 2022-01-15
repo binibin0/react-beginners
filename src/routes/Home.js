@@ -11,7 +11,6 @@ function Home() {
       .then((json) => setMovies(json.data.movies), setLoading(false));
   }, []);
 
-  console.log(loading);
   return (
     <div>
       {loading ? (
